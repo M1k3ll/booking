@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>نوبت‌ها</title>
+</head>
+<body>
+    <h1>نوبت‌های تعمیرگاه {{ garage.name }}</h1>
+    <ul>
+        {% for appointment in appointments %}
+            <li>{{ appointment.appointment_date }} - وضعیت: {{ appointment.status }}</li>
+        {% empty %}
+            <li>نوبتی وجود ندارد.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

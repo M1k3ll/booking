@@ -1,0 +1,7 @@
+<h2>رزرو نوبت</h2>
+<p>آیا می‌خواهید نوبت {{ appointment }} را رزرو کنید؟</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">تأیید رزرو</button>
+</form>

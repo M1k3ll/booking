@@ -29,17 +29,6 @@ class User(models.Model):  # مدل کاربر
         return f"{self.first_name} {self.last_name} - {self.mobile_number}"
 
 
-# class Vehicle(models.Model):  # مدل خودرو
-#     license_plate = models.CharField(max_length=20, unique=True)  # شماره پلاک (یکتا)
-#     color = models.CharField(max_length=30)  # رنگ
-#     brand = models.CharField(max_length=50)  # برند
-#     year = models.PositiveIntegerField()  # سال ساخت
-#     issue = models.TextField()  # مشکل خودرو
-#     owner = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True)  # صاحب خودرو
-
-#     def __str__(self):
-#         return f"{self.brand} - {self.license_plate}"
-
 
 class Vehicle(models.Model):
     # انتخاب رنگ از لیست رنگ‌های پرکاربرد
@@ -90,3 +79,16 @@ class Appointment(models.Model):  # مدل نوبت‌دهی
 
     def __str__(self):
         return f"Appointment for {self.vehicle} at {self.appointment_date}"
+    
+
+
+class Shift(models.Model):
+    garage = models.ForeignKey(Garage, on_delete=models.CASCADE)
+    date = models.DateField()  # تاریخ شمسی ذخیره شده به صورت میلادی
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    is_reserved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.garage.name} - {self.date} | {self.start_time} to {self.end_time}"
+
