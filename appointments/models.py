@@ -82,13 +82,32 @@ class Appointment(models.Model):  # مدل نوبت‌دهی
     
 
 
+
 class Shift(models.Model):
-    garage = models.ForeignKey(Garage, on_delete=models.CASCADE)
-    date = models.DateField()  # تاریخ شمسی ذخیره شده به صورت میلادی
+    SHIFT_TYPE_CHOICES = [
+        ('morning', 'Morning'),
+        ('afternoon', 'Afternoon'),
+    ]
+    
+    garage = models.ForeignKey('Garage', on_delete=models.CASCADE)
+
+    # تاریخ شیفت به صورت میلادی ذخیره می‌شود
+    date = models.DateField()
+
+    # نوع شیفت: صبح یا عصر
+    shift_type = models.CharField(
+        max_length=10,
+        choices=SHIFT_TYPE_CHOICES
+    )
+
+    # زمان شروع و پایان شیفت (مثلاً 07:00 تا 12:00)
     start_time = models.TimeField()
     end_time = models.TimeField()
-    is_reserved = models.BooleanField(default=False)
+
+    # فاصله بین نوبت‌ها برحسب دقیقه (مثلاً 15 دقیقه)
+    interval_minutes = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.garage.name} - {self.date} | {self.start_time} to {self.end_time}"
+        return f"{self.garage.name} - {self.date} ({self.shift_type})"
+
 

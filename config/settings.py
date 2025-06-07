@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', 
     'crispy_forms',
     'crispy_bootstrap5',
+    'appointment.apps.AppointmentConfig',  # نه فقط 'appointment'
  
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
