@@ -3,8 +3,12 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .models import Garage, Vehicle, Appointment
 from .serializers import GarageSerializer, VehicleSerializer, AppointmentSerializer
 from django.views import View
-
-
+from django.shortcuts import render, get_object_or_404
+from .models import Shift, Appointment
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Appointment
+from .serializers import AppointmentSerializer
 
 
 def homepage(request):
@@ -79,3 +83,39 @@ def reserve_appointment(request, appointment_id):
 
 def appointment_success(request):
     return render(request, 'appointments/success.html')
+
+
+
+
+
+def available_appointments_view(request, shift_id):
+    # شیفتی که کاربر انتخاب کرده بر اساس id از دیتابیس گرفته می‌شود
+    shift = get_object_or_404(Shift, id=shift_id)
+
+    # فقط نوبت‌هایی که هنوز رزرو نشده‌اند را فیلتر می‌کنیم
+    appointments = Appointment.objects.filter(
+        shift=shift,          # مربوط به همین شیفت
+        is_reserved=False     # فقط نوبت‌هایی که هنوز رزرو نشده‌اند
+    ).order_by('start_time')  # به ترتیب زمانی
+
+    # نمایش صفحه HTML و ارسال شیفت و لیست نوبت‌ها به قالب
+    return render(request, 'appointments/available_appointments.html', {
+        'shift': shift,
+        'appointments': appointments
+    })
+
+
+
+@api_view(['GET'])  # فقط درخواست GET اجازه دارد این ویو را صدا بزند
+def available_appointments_api(request, shift_id):
+    # فقط نوبت‌هایی را می‌گیریم که برای این شیفت و آزاد (رزرو نشده) هستند
+    appointments = Appointment.objects.filter(
+        shift_id=shift_id,
+        is_reserved=False
+    ).order_by('start_time')  # مرتب‌سازی بر اساس زمان شروع
+
+    # سریالایز کردن نوبت‌ها به JSON
+    serializer = AppointmentSerializer(appointments, many=True)
+
+    # برگرداندن پاسخ JSON
+    return Response(serializer.data)
